@@ -1,31 +1,32 @@
 package ru.otus.spring.service;
 
+import ru.otus.spring.dao.QuestionDao;
+
 import java.io.*;
-import java.nio.charset.StandardCharsets;
 
 public class QuestionServiceImpl implements QuestionService {
 
-    private final InputStream fis;
+    private final QuestionDao questionDao;
 
-    public QuestionServiceImpl(String fileName) {
+    public QuestionServiceImpl(QuestionDao questionDao) {
 
-        this.fis = this.getClass().getClassLoader()
-                .getResourceAsStream(fileName);
+        this.questionDao = questionDao;
 
     }
 
     @Override
     public void printQuestionsFromStream() {
 
-        try (InputStreamReader isr = new InputStreamReader(fis,
-                StandardCharsets.UTF_8);
-             BufferedReader br = new BufferedReader(isr)) {
+        try (InputStreamReader isr = questionDao.getInputStreamReader()) {
 
-            br.lines().forEach(System.out::println);
+            BufferedReader br = new BufferedReader(isr);
+
+            br.lines()
+                    .forEach(System.out::println);
+
         } catch (IOException e) {
             e.printStackTrace();
-        }
-
+        } ;
     }
 
 }
