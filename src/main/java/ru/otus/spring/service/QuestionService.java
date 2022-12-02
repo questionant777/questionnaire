@@ -1,7 +1,8 @@
 package ru.otus.spring.service;
 
+import java.io.IOException;
+
 public interface QuestionService {
 
-    void printQuestionsFromStream();
-
+    void printQuestionsFromStream(char separator) throws IOException;
 }

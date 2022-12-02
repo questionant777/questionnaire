@@ -9,24 +9,23 @@ public class QuestionServiceImpl implements QuestionService {
     private final QuestionDao questionDao;
 
     public QuestionServiceImpl(QuestionDao questionDao) {
-
         this.questionDao = questionDao;
-
     }
 
     @Override
-    public void printQuestionsFromStream() {
+    public void printQuestionsFromStream(char separator) throws IOException {
 
-        try (InputStreamReader isr = questionDao.getInputStreamReader()) {
+        String[][] data = questionDao.getDataInArray(separator);
 
-            BufferedReader br = new BufferedReader(isr);
-
-            br.lines()
-                    .forEach(System.out::println);
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } ;
+        for (int rowIdx = 0; rowIdx < data.length; rowIdx++)  {
+            for (int colIdx = 0; colIdx < data[rowIdx].length; colIdx++)  {
+                if (colIdx == 0)
+                    System.out.print("Question: ");
+                else if (colIdx == 1)
+                    System.out.print("Аnswer options: ");
+                System.out.println(data[rowIdx][colIdx]);
+            }
+        }
     }
 
 }

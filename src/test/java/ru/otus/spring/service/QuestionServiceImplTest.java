@@ -8,8 +8,10 @@ import org.mockito.junit.MockitoJUnitRunner;
 import ru.otus.spring.dao.QuestionDao;
 
 import java.io.ByteArrayInputStream;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 
 import static org.junit.Assert.*;
 import static org.assertj.core.api.Assertions.assertThat;
@@ -28,14 +30,20 @@ public class QuestionServiceImplTest {
     public void setUp() throws Exception {
         service = new QuestionServiceImpl(questionDao);
 
-        when(questionDao.getInputStreamReader())
-                .thenReturn(new InputStreamReader(
-                        new ByteArrayInputStream("test test test\ntest test test".getBytes()), StandardCharsets.UTF_8));
+        ArrayList<String[]> data = new ArrayList<String[]>();
+        ArrayList<String> row = new ArrayList<String>();
+
+        row.add("test11,test12");
+
+        data.add(row.toArray(new String[0]));
+
+        when(questionDao.getDataInArray(','))
+                .thenReturn(data.toArray(new String[0][]));
     }
 
     @Test
-    public void printQuestionsFromStreamTest() {
-        service.printQuestionsFromStream();
+    public void printQuestionsFromStreamTest() throws IOException {
+        service.printQuestionsFromStream(',');
         assertTrue(true);
     }
 }

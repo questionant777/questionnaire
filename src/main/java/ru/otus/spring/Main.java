@@ -3,6 +3,8 @@ package ru.otus.spring;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import ru.otus.spring.service.QuestionService;
 
+import java.io.IOException;
+
 public class Main {
 
     public static void main(String[] args) {
@@ -12,7 +14,11 @@ public class Main {
 
         QuestionService service = context.getBean(QuestionService.class);
 
-        service.printQuestionsFromStream();
+        try {
+            service.printQuestionsFromStream(',');
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
     }
 }

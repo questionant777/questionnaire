@@ -8,7 +8,7 @@
         <constructor-arg name="fileNameCsv" value="questions.csv" />
     </bean>
 
-    <bean id="personService" class="ru.otus.spring.service.QuestionServiceImpl" >
+    <bean id="questionService" class="ru.otus.spring.service.QuestionServiceImpl" >
         <constructor-arg name="questionDao" ref="questionDao" />
     </bean>
 
