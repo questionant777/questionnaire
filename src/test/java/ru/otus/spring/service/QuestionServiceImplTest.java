@@ -1,9 +1,10 @@
 package ru.otus.spring.service;
 
 import org.junit.Before;
-import org.junit.Ignore;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.mockito.Mock;
+import org.mockito.junit.MockitoJUnitRunner;
 import ru.otus.spring.dao.QuestionDao;
 
 import java.io.ByteArrayInputStream;
@@ -15,13 +16,13 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.when;
 
-
+@RunWith(MockitoJUnitRunner.class)
 public class QuestionServiceImplTest {
 
     @Mock
     QuestionDao questionDao;
 
-    private QuestionServiceImpl service;
+    QuestionServiceImpl service;
 
     @Before
     public void setUp() throws Exception {
@@ -29,12 +30,11 @@ public class QuestionServiceImplTest {
 
         when(questionDao.getInputStreamReader())
                 .thenReturn(new InputStreamReader(
-                        new ByteArrayInputStream("test test test".getBytes()), StandardCharsets.UTF_8));
+                        new ByteArrayInputStream("test test test\ntest test test".getBytes()), StandardCharsets.UTF_8));
     }
 
     @Test
-    @Ignore
-    public void printQuestionsFromStream() {
+    public void printQuestionsFromStreamTest() {
         service.printQuestionsFromStream();
         assertTrue(true);
     }
