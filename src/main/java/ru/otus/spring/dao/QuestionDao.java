@@ -1,9 +1,9 @@
 package ru.otus.spring.dao;
 
-import java.io.IOException;
+import java.io.InputStream;
 
 public interface QuestionDao {
 
-    String[][] getDataInArray(char separator) throws IOException;
+    InputStream getFileCsvInputStream();
 
 }

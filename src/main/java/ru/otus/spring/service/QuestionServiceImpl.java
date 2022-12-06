@@ -1,8 +1,12 @@
 package ru.otus.spring.service;
 
 import ru.otus.spring.dao.QuestionDao;
+import ru.otus.spring.domain.Question;
 
 import java.io.*;
+import java.util.List;
+
+import static ru.otus.spring.utils.QuestionUtils.loadFromInputStreamToDomain;
 
 public class QuestionServiceImpl implements QuestionService {
 
@@ -12,20 +16,20 @@ public class QuestionServiceImpl implements QuestionService {
         this.questionDao = questionDao;
     }
 
+
     @Override
     public void printQuestionsFromStream(char separator) throws IOException {
 
-        String[][] data = questionDao.getDataInArray(separator);
+        List<Question> questionList =
+                loadFromInputStreamToDomain(questionDao.getFileCsvInputStream(), separator);
 
-        for (int rowIdx = 0; rowIdx < data.length; rowIdx++)  {
-            for (int colIdx = 0; colIdx < data[rowIdx].length; colIdx++)  {
-                if (colIdx == 0)
-                    System.out.print("Question: ");
-                else if (colIdx == 1)
-                    System.out.print("Аnswer options: ");
-                System.out.println(data[rowIdx][colIdx]);
-            }
-        }
+        questionList.forEach(
+                (question) -> {
+                    System.out.println("Question: " + question.getQuestion());
+                    System.out.println("Аnswer options: " + question.getAnswerOptions());
+                }
+        );
+
     }
 
 }
