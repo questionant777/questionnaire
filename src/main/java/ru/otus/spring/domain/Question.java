@@ -2,18 +2,18 @@ package ru.otus.spring.domain;
 
 public class Question {
     private final String question;
-    private final String answerOptions;
+    private final String rightAnswer;
 
-    public Question(String question, String answerOptions) {
+    public Question(String question, String rightAnswer) {
         this.question = question;
-        this.answerOptions = answerOptions;
+        this.rightAnswer = rightAnswer;
     }
 
     public String getQuestion() {
         return question;
     }
 
-    public String getAnswerOptions() {
-        return answerOptions;
+    public String getRightAnswer() {
+        return rightAnswer;
     }
 }

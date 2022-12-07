@@ -4,5 +4,5 @@ import java.io.IOException;
 
 public interface QuestionService {
 
-    void printQuestionsFromStream(char separator) throws IOException;
+    void replyOnQuestionsFromStream(char separator) throws IOException;
 }
