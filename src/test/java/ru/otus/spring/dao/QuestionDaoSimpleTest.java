@@ -3,7 +3,7 @@ package ru.otus.spring.dao;
 import org.junit.Before;
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.assertj.core.api.Assertions.assertThat;
 
 public class QuestionDaoSimpleTest {
 
@@ -11,11 +11,11 @@ public class QuestionDaoSimpleTest {
 
     @Before
     public void setUp() {
-        service = new QuestionDaoSimple("test-questions.csv");
+        service = new QuestionDaoSimple("test-questions.csv", ',');
     }
 
     @Test
-    public void getFileCsvInputStream() {
-        assertNotNull(service.getFileCsvInputStream());
+    public void findAllQuestionsTest() {
+        assertThat(service.findAllQuestions().size()).isEqualTo(5);
     }
 }

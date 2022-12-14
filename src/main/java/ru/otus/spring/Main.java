@@ -5,10 +5,8 @@ import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import ru.otus.spring.service.QuestionService;
 
-import java.io.IOException;
-
 @Configuration
-@ComponentScan
+@ComponentScan("ru.otus")
 public class Main {
 
     public static void main(String[] args) {
@@ -18,11 +16,7 @@ public class Main {
 
         QuestionService service = context.getBean(QuestionService.class);
 
-        try {
-            service.replyOnQuestionsFromStream(',');
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        System.out.println(service.processQuestionsFromDao());
 
     }
 }

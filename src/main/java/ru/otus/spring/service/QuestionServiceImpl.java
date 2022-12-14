@@ -7,11 +7,8 @@ import org.apache.commons.lang3.math.NumberUtils;
 import ru.otus.spring.dao.QuestionDao;
 import ru.otus.spring.domain.Question;
 
-import java.io.*;
 import java.util.List;
 import java.util.Scanner;
-
-import static ru.otus.spring.utils.QuestionUtils.loadFromInputStreamToDomain;
 
 @Service
 @PropertySource("classpath:application.properties")
@@ -29,47 +26,62 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public void replyOnQuestionsFromStream(char separator) throws IOException {
-
-        Scanner scanner = new Scanner(System.in);
-
+    public String fillFirstLastName(Scanner scanner) {
         System.out.print("Enter your first name: ");
         String firstName = scanner.nextLine().trim();
         System.out.print("Enter your last name: ");
         String lastName = scanner.nextLine().trim();
 
-        // кол-во правильных ответов для успешного зачета из настройки
-        int rightAnswerCountExamPass = NumberUtils.toInt(rightAnswerCountExamPassStr, 0);
+        return firstName + " " + lastName;
+    }
 
-        // счетчик правильных ответов
-        int rightAnswerCount = 0;
+    @Override
+    public boolean checkExamPass(int rightAnswerCountExamPass, int rightAnswerCount) {
+        return rightAnswerCountExamPass == 0 || rightAnswerCount >= rightAnswerCountExamPass;
+    }
 
-        List<Question> questionList =
-                loadFromInputStreamToDomain(questionDao.getFileCsvInputStream(), separator);
+    @Override
+    public int calcRightAnswerCount(List<Question> questionList) {
+        return (int) questionList.stream()
+                .filter(q -> q.getRightAnswer().equals(q.getUserAnswer())).count();
+    }
 
+    @Override
+    public void fillAnswerByQuestions(Scanner scanner, List<Question> questionList) {
         for (Question question : questionList) {
             System.out.println("Question: " + question.getQuestion());
             System.out.print  ("Enter your answer: ");
-            String userAnswerOption = scanner.nextLine().trim();
-
-            if (question.getRightAnswer().equals(userAnswerOption))
-                rightAnswerCount++;
+            question.setUserAnswer(scanner.nextLine().trim());
         }
+    }
+
+    @Override
+    public String processQuestionsFromDao() {
+        Scanner scanner = new Scanner(System.in);
+
+        String firstLastName = fillFirstLastName(scanner);
+
+        // кол-во правильных ответов для успешного зачета из настройки
+        int rightAnswerCountExamPass = NumberUtils.toInt(rightAnswerCountExamPassStr, 0);
+
+        List<Question> questionList = questionDao.findAllQuestions();
+
+        fillAnswerByQuestions(scanner, questionList);
+
+        // счетчик правильных ответов
+        int rightAnswerCount = calcRightAnswerCount(questionList);
 
         String result = "Result: " +
-                firstName +
-                " " +
-                lastName +
+                firstLastName +
                 " exam is " +
-                (rightAnswerCountExamPass > 0 && rightAnswerCount < rightAnswerCountExamPass ? "NOT " : "") +
+                (checkExamPass(rightAnswerCountExamPass, rightAnswerCount) ? "" : "NOT ") +
                 "passed" +
                 ", RightAnswerCount: " +
                 rightAnswerCount +
                 " from TotalQuestionCount: " +
                 questionList.size();
 
-        System.out.println(result);
+        return result;
 
     }
-
 }
