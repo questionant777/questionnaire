@@ -1,9 +1,11 @@
 package ru.otus.spring.dao;
 
-import java.io.InputStream;
+import ru.otus.spring.domain.Question;
+
+import java.util.List;
 
 public interface QuestionDao {
 
-    InputStream getFileCsvInputStream();
+    List<Question> findAllQuestions();
 
 }
