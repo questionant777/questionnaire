@@ -1,35 +1,44 @@
 package ru.otus.spring.service;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
+import org.springframework.context.MessageSource;
+import org.springframework.context.annotation.Primary;
 import org.springframework.stereotype.Service;
-import org.apache.commons.lang3.math.NumberUtils;
+import ru.otus.spring.config.AppPropsQuestions;
 import ru.otus.spring.dao.QuestionDao;
 import ru.otus.spring.domain.Question;
 
 import java.util.List;
 import java.util.Scanner;
 
+import static java.lang.Integer.parseInt;
+
 @Service
-@PropertySource("classpath:application.properties")
+@Primary
 public class QuestionServiceImpl implements QuestionService {
+
+    private final AppPropsQuestions appPropsQuestions;
 
     private final QuestionDao questionDao;
 
-    private final String rightAnswerCountExamPassStr;
+    private final MessageSource messageSource;
 
     public QuestionServiceImpl(
+            AppPropsQuestions appPropsQuestions,
             QuestionDao questionDao,
-            @Value("${right.answer.count.exam.pass}") String rightAnswerCountExamPassStr) {
+            MessageSource messageSource)
+    {
+        this.appPropsQuestions = appPropsQuestions;
         this.questionDao = questionDao;
-        this.rightAnswerCountExamPassStr = rightAnswerCountExamPassStr;
+        this.messageSource = messageSource;
     }
 
     @Override
     public String fillFirstLastName(Scanner scanner) {
-        System.out.print("Enter your first name: ");
+
+        System.out.print(messageSource.getMessage("enter.your.first.name", null, appPropsQuestions.getLocale()) + " ");
         String firstName = scanner.nextLine().trim();
-        System.out.print("Enter your last name: ");
+
+        System.out.print(messageSource.getMessage("enter.your.last.name", null, appPropsQuestions.getLocale()) + " ");
         String lastName = scanner.nextLine().trim();
 
         return firstName + " " + lastName;
@@ -48,21 +57,35 @@ public class QuestionServiceImpl implements QuestionService {
 
     @Override
     public void fillAnswerByQuestions(Scanner scanner, List<Question> questionList) {
+
+        String questionLocale = messageSource.getMessage("question", null, appPropsQuestions.getLocale());
+
+        String entYourAnswerLocale = messageSource.getMessage("enter.your.answer", null, appPropsQuestions.getLocale());
+
         for (Question question : questionList) {
-            System.out.println("Question: " + question.getQuestion());
-            System.out.print  ("Enter your answer: ");
+            System.out.println(questionLocale
+                    + " "
+                    + messageSource.getMessage("how.much", new String[]{question.getQuestion()}, appPropsQuestions.getLocale()));
+            System.out.print  (entYourAnswerLocale + " ");
             question.setUserAnswer(scanner.nextLine().trim());
         }
     }
 
     @Override
     public String processQuestionsFromDao() {
+
         Scanner scanner = new Scanner(System.in);
 
         String firstLastName = fillFirstLastName(scanner);
 
         // кол-во правильных ответов для успешного зачета из настройки
-        int rightAnswerCountExamPass = NumberUtils.toInt(rightAnswerCountExamPassStr, 0);
+        int rightAnswerCountExamPass = 0;
+
+        try {
+            rightAnswerCountExamPass = parseInt(appPropsQuestions.getRightAnswerCountExamPass());
+        } catch (Exception ignored) {
+            //
+        }
 
         List<Question> questionList = questionDao.findAllQuestions();
 
@@ -71,17 +94,16 @@ public class QuestionServiceImpl implements QuestionService {
         // счетчик правильных ответов
         int rightAnswerCount = calcRightAnswerCount(questionList);
 
-        String result = "Result: " +
-                firstLastName +
-                " exam is " +
-                (checkExamPass(rightAnswerCountExamPass, rightAnswerCount) ? "" : "NOT ") +
-                "passed" +
-                ", RightAnswerCount: " +
-                rightAnswerCount +
-                " from TotalQuestionCount: " +
-                questionList.size();
+        String notLocale = messageSource.getMessage("not", null, appPropsQuestions.getLocale());
 
-        return result;
-
+        return  messageSource.getMessage("result",
+                        new String[]{
+                                firstLastName,
+                                (checkExamPass(rightAnswerCountExamPass, rightAnswerCount) ? "" : notLocale),
+                                String.valueOf(rightAnswerCount),
+                                String.valueOf(questionList.size())
+                        },
+                        appPropsQuestions.getLocale()
+                );
     }
 }

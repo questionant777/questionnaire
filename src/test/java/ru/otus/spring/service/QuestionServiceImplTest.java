@@ -4,7 +4,11 @@ import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.Mock;
-import org.mockito.junit.MockitoJUnitRunner;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.context.MessageSource;
+import org.springframework.test.context.junit4.SpringRunner;
+import ru.otus.spring.config.AppPropsQuestions;
 import ru.otus.spring.dao.QuestionDao;
 import ru.otus.spring.domain.Question;
 
@@ -14,25 +18,37 @@ import java.io.InputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Scanner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
 
-@RunWith(MockitoJUnitRunner.class)
+@RunWith(SpringRunner.class)
+@SpringBootTest
 public class QuestionServiceImplTest {
 
     @Mock
     QuestionDao questionDao;
 
-    QuestionServiceImpl service;
+    @Autowired
+    MessageSource messageSource;
+
+    private QuestionServiceImpl service;
 
     final InputStream systemIn = System.in;
     final PrintStream systemOut = System.out;
 
     @Before
     public void setUp() {
-        service = new QuestionServiceImpl(questionDao, "3");
+
+        AppPropsQuestions appPropsQuestions = new AppPropsQuestions();
+        appPropsQuestions.setCsvFileName("test-questions.csv");
+        appPropsQuestions.setCsvSeparator(",");
+        appPropsQuestions.setRightAnswerCountExamPass("3");
+        appPropsQuestions.setLocale(Locale.forLanguageTag("en"));
+
+        service = new QuestionServiceImpl(appPropsQuestions, questionDao, messageSource);
 
         List<Question> allQuestionList = new ArrayList<>();
         allQuestionList.add(new Question("q1", "1", ""));
@@ -103,7 +119,7 @@ public class QuestionServiceImplTest {
 
         closeConsole();
 
-        assertThat(result).isEqualTo("Result: Ivan Ivanov exam is passed, RightAnswerCount: 5 from TotalQuestionCount: 5");
+        assertThat(result).isEqualTo("Result: Ivan Ivanov exam is  passed, RightAnswerCount: 5 from TotalQuestionCount: 5");
     }
 
     @Test

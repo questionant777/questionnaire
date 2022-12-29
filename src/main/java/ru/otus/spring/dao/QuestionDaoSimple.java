@@ -1,8 +1,7 @@
 package ru.otus.spring.dao;
 
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.context.annotation.PropertySource;
-import org.springframework.stereotype.Service;
+import org.springframework.stereotype.Component;
+import ru.otus.spring.config.AppPropsQuestions;
 import ru.otus.spring.domain.Question;
 import ru.otus.spring.utils.CsvUtils;
 
@@ -11,20 +10,17 @@ import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.List;
 
-@Service
-@PropertySource("classpath:application.properties")
+@Component
 public class QuestionDaoSimple implements QuestionDao {
 
     private final InputStream fileCsvInputStream;
 
     private final char separator;
 
-    public QuestionDaoSimple(
-            @Value("${questions.csv.filename}") String fileNameCsv,
-            @Value("${questions.csv.separator}") char separator)
+    public QuestionDaoSimple(AppPropsQuestions appPropsQuestions)
     {
-        this.fileCsvInputStream = this.getClass().getClassLoader().getResourceAsStream(fileNameCsv);
-        this.separator = separator;
+        this.fileCsvInputStream = this.getClass().getClassLoader().getResourceAsStream(appPropsQuestions.getCsvFileName());
+        this.separator = appPropsQuestions.getCsvSeparator().charAt(0);
     }
 
     @Override
