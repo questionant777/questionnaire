@@ -1,4 +1,4 @@
 # questionnaire
 otus project test
 
-execute command-line "java -jar questionnaire-1.0-jar-with-dependencies.jar "
+execute command-line "java -jar questionnaire-0.0.1-SNAPSHOT-spring-boot.jar"
