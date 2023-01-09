@@ -1,0 +1,9 @@
+questions:
+  csv-file-name: questions.csv
+  csv-separator: ","
+  right-answer-count-exam-pass: 3
+  locale: ru_RU
+spring:
+  messages:
+    basename: i18n/messages
+    encoding: "UTF-8"
