@@ -28,13 +28,3 @@ public class AppRunner {
     }
 
 }
-
-//public class CliAppRunner implements ApplicationRunner {
-//    public CliAppRunner() {
-//
-//    }
-//
-//    @Override
-//    public void run(ApplicationArguments args) throws Exception {
-//        //do nothing
-//    }
