@@ -4,6 +4,12 @@ questions:
   right-answer-count-exam-pass: 3
   locale: ru_RU
 spring:
+  profiles:
+    active: test
   messages:
     basename: i18n/messages
     encoding: "UTF-8"
+  shell:
+    interactive:
+      enabled: false
+

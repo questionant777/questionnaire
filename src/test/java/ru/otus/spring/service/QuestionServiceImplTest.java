@@ -19,7 +19,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Scanner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -63,11 +62,12 @@ public class QuestionServiceImplTest {
 
     @Test
     public void fillFirstLastNameTest() {
+
         inputConsole("Ivan\nIvanov\n");
 
-        Scanner scanner = new Scanner(System.in);
+        service.resetSystemIn();
 
-        String result = service.fillFirstLastName(scanner);
+        String result = service.fillFirstLastName();
 
         closeConsole();
 
@@ -100,9 +100,9 @@ public class QuestionServiceImplTest {
 
         inputConsole("test1\ntest2\n");
 
-        Scanner scanner = new Scanner(System.in);
+        service.resetSystemIn();
 
-        service.fillAnswerByQuestions(scanner, questionList);
+        service.fillAnswerByQuestions(questionList);
 
         closeConsole();
 
@@ -115,6 +115,8 @@ public class QuestionServiceImplTest {
 
         inputConsole("Ivan\nIvanov\n1\n2\n3\n4\n5\n");
 
+        service.resetSystemIn();
+
         String result = service.processQuestionsFromDao();
 
         closeConsole();
@@ -126,6 +128,8 @@ public class QuestionServiceImplTest {
     public void processQuestionsFromDaoNotPassTest() {
 
         inputConsole("Ivan\nIvanov\n1\n1\n1\n1\n5\n");
+
+        service.resetSystemIn();
 
         String result = service.processQuestionsFromDao();
 

@@ -13,31 +13,27 @@ import java.util.List;
 @Component
 public class QuestionDaoSimple implements QuestionDao {
 
-    private final InputStream fileCsvInputStream;
+    private final List<Question> questionList = new ArrayList<>();
 
-    private final char separator;
+    public QuestionDaoSimple(AppPropsQuestions appPropsQuestions) {
 
-    public QuestionDaoSimple(AppPropsQuestions appPropsQuestions)
-    {
-        this.fileCsvInputStream = this.getClass().getClassLoader().getResourceAsStream(appPropsQuestions.getCsvFileName());
-        this.separator = appPropsQuestions.getCsvSeparator().charAt(0);
-    }
+        InputStream fileCsvInputStream = this.getClass().getClassLoader().getResourceAsStream(appPropsQuestions.getCsvFileName());
 
-    @Override
-    public List<Question> findAllQuestions() {
+        char separator = appPropsQuestions.getCsvSeparator().charAt(0);
 
-        List<Question> questionList = new ArrayList<>();
-
-        String[][] csvData;
+        String[][] csvData = new String[0][];
 
         try {
             csvData = CsvUtils.parseCsvData(
                     fileCsvInputStream, separator, true, true);
         } catch (IOException ioException) {
-
             System.out.println("Raise an error for read question operation: " + ioException);
+        }
 
-            return questionList;
+        try {
+            fileCsvInputStream.close();
+        } catch (IOException ioException) {
+            System.out.println("Raise an error for close question operation: " + ioException);
         }
 
         String questionStr;
@@ -60,7 +56,10 @@ public class QuestionDaoSimple implements QuestionDao {
             questionList.add(new Question(questionStr, rightAnswerStr, ""));
         }
 
-        return questionList;
     }
 
+    @Override
+    public List<Question> findAllQuestions() {
+        return this.questionList;
+    }
 }

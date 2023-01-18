@@ -10,12 +10,24 @@ import ru.otus.spring.service.QuestionService;
 @SpringBootApplication
 @EnableConfigurationProperties(AppPropsQuestions.class)
 public class Main {
+
+//    @Value("${spring.shell.interactive.enabled}")
+//    private static Boolean shellInteractiveEnabled;
+
     public static void main(String[] args) {
 
-        ApplicationContext context = SpringApplication.run(Main.class, args);
+        SpringApplication.run(Main.class, args);
 
-        QuestionService service = context.getBean(QuestionService.class);
-
-        System.out.println(service.processQuestionsFromDao());
+//        System.out.println("main");
+//        System.out.println(shellInteractiveEnabled);
+//
+//        if (!shellInteractiveEnabled) {
+//            QuestionService service = context.getBean(QuestionService.class);
+//            HandleInOut out = context.getBean(HandleInOut.class);
+//
+//            String result = service.processQuestionsFromDao();
+//
+//            out.printLn(result);
+//        }
     }
 }
