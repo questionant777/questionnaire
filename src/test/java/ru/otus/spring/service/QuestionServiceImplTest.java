@@ -33,6 +33,9 @@ public class QuestionServiceImplTest {
     @Autowired
     MessageSource messageSource;
 
+    @Autowired
+    HandleInOut handleInOut;
+
     private QuestionServiceImpl service;
 
     final InputStream systemIn = System.in;
@@ -47,7 +50,7 @@ public class QuestionServiceImplTest {
         appPropsQuestions.setRightAnswerCountExamPass("3");
         appPropsQuestions.setLocale(Locale.forLanguageTag("en"));
 
-        service = new QuestionServiceImpl(appPropsQuestions, questionDao, messageSource);
+        service = new QuestionServiceImpl(appPropsQuestions, questionDao, messageSource, handleInOut);
 
         List<Question> allQuestionList = new ArrayList<>();
         allQuestionList.add(new Question("q1", "1", ""));
@@ -65,7 +68,7 @@ public class QuestionServiceImplTest {
 
         inputConsole("Ivan\nIvanov\n");
 
-        service.resetSystemIn();
+        handleInOut.resetSystemIn();
 
         String result = service.fillFirstLastName();
 
@@ -100,7 +103,7 @@ public class QuestionServiceImplTest {
 
         inputConsole("test1\ntest2\n");
 
-        service.resetSystemIn();
+        handleInOut.resetSystemIn();
 
         service.fillAnswerByQuestions(questionList);
 
@@ -115,7 +118,7 @@ public class QuestionServiceImplTest {
 
         inputConsole("Ivan\nIvanov\n1\n2\n3\n4\n5\n");
 
-        service.resetSystemIn();
+        handleInOut.resetSystemIn();
 
         String result = service.processQuestionsFromDao();
 
@@ -129,7 +132,7 @@ public class QuestionServiceImplTest {
 
         inputConsole("Ivan\nIvanov\n1\n1\n1\n1\n5\n");
 
-        service.resetSystemIn();
+        handleInOut.resetSystemIn();
 
         String result = service.processQuestionsFromDao();
 

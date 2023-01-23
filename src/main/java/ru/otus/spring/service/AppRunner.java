@@ -4,7 +4,6 @@ import org.springframework.context.annotation.Profile;
 import org.springframework.shell.standard.ShellComponent;
 import org.springframework.shell.standard.ShellMethod;
 import org.springframework.stereotype.Component;
-import ru.otus.spring.utils.HandleInOut;
 
 @Component
 @Profile("!test")
@@ -14,9 +13,9 @@ public class AppRunner {
     private final QuestionService questionService;
     private final HandleInOut handleInOut;
 
-    public AppRunner(QuestionService questionService) {
+    public AppRunner(QuestionService questionService, HandleInOut handleInOut) {
         this.questionService = questionService;
-        this.handleInOut = new HandleInOut();
+        this.handleInOut = handleInOut;
     }
 
     @ShellMethod(value = "Start questionnaire command", key = {"sq", "start questionnaire"})
@@ -24,7 +23,7 @@ public class AppRunner {
 
         String result = questionService.processQuestionsFromDao();
 
-        handleInOut.printLn(result);
+        handleInOut.outAndCr(result);
     }
 
 }

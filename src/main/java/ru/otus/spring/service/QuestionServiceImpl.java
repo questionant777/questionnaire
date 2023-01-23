@@ -6,7 +6,6 @@ import org.springframework.stereotype.Service;
 import ru.otus.spring.config.AppPropsQuestions;
 import ru.otus.spring.dao.QuestionDao;
 import ru.otus.spring.domain.Question;
-import ru.otus.spring.utils.HandleInOut;
 
 import java.util.List;
 
@@ -27,21 +26,22 @@ public class QuestionServiceImpl implements QuestionService {
     public QuestionServiceImpl(
             AppPropsQuestions appPropsQuestions,
             QuestionDao questionDao,
-            MessageSource messageSource)
+            MessageSource messageSource,
+            HandleInOut handleInOut)
     {
         this.appPropsQuestions = appPropsQuestions;
         this.questionDao = questionDao;
         this.messageSource = messageSource;
-        this.handleInOut = new HandleInOut();
+        this.handleInOut = handleInOut;
     }
 
     @Override
     public String fillFirstLastName() {
-        handleInOut.print(messageSource.getMessage("enter.your.first.name", null, appPropsQuestions.getLocale()) + " ");
-        String firstName = handleInOut.nextLineIn();
+        handleInOut.out(messageSource.getMessage("enter.your.first.name", null, appPropsQuestions.getLocale()) + " ");
+        String firstName = handleInOut.in();
 
-        handleInOut.print(messageSource.getMessage("enter.your.last.name", null, appPropsQuestions.getLocale()) + " ");
-        String lastName = handleInOut.nextLineIn();
+        handleInOut.out(messageSource.getMessage("enter.your.last.name", null, appPropsQuestions.getLocale()) + " ");
+        String lastName = handleInOut.in();
 
         return firstName + " " + lastName;
     }
@@ -65,12 +65,12 @@ public class QuestionServiceImpl implements QuestionService {
         String entYourAnswerLocale = messageSource.getMessage("enter.your.answer", null, appPropsQuestions.getLocale());
 
         for (Question question : questionList) {
-            handleInOut.printLn(questionLocale
+            handleInOut.outAndCr(questionLocale
                     + " "
                     + messageSource.getMessage("how.much", new String[]{question.getQuestion()}, appPropsQuestions.getLocale()));
-            handleInOut.print  (entYourAnswerLocale + " ");
+            handleInOut.out     (entYourAnswerLocale + " ");
 
-            question.setUserAnswer(handleInOut.nextLineIn());
+            question.setUserAnswer(handleInOut.in());
         }
     }
 
