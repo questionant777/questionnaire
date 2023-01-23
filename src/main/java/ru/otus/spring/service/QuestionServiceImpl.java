@@ -108,8 +108,4 @@ public class QuestionServiceImpl implements QuestionService {
                 );
     }
 
-    @Override
-    public void resetSystemIn() {
-        handleInOut.resetSystemIn();
-    }
 }

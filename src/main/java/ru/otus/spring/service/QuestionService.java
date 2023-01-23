@@ -17,5 +17,4 @@ public interface QuestionService {
 
     void fillAnswerByQuestions(List<Question> questionList);
 
-    void resetSystemIn();
 }
