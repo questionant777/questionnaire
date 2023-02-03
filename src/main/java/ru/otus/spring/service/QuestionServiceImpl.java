@@ -8,7 +8,6 @@ import ru.otus.spring.dao.QuestionDao;
 import ru.otus.spring.domain.Question;
 
 import java.util.List;
-import java.util.Scanner;
 
 import static java.lang.Integer.parseInt;
 
@@ -22,24 +21,27 @@ public class QuestionServiceImpl implements QuestionService {
 
     private final MessageSource messageSource;
 
+    private final HandleInOut handleInOut;
+
     public QuestionServiceImpl(
             AppPropsQuestions appPropsQuestions,
             QuestionDao questionDao,
-            MessageSource messageSource)
+            MessageSource messageSource,
+            HandleInOut handleInOut)
     {
         this.appPropsQuestions = appPropsQuestions;
         this.questionDao = questionDao;
         this.messageSource = messageSource;
+        this.handleInOut = handleInOut;
     }
 
     @Override
-    public String fillFirstLastName(Scanner scanner) {
+    public String fillFirstLastName() {
+        handleInOut.out(messageSource.getMessage("enter.your.first.name", null, appPropsQuestions.getLocale()) + " ");
+        String firstName = handleInOut.in();
 
-        System.out.print(messageSource.getMessage("enter.your.first.name", null, appPropsQuestions.getLocale()) + " ");
-        String firstName = scanner.nextLine().trim();
-
-        System.out.print(messageSource.getMessage("enter.your.last.name", null, appPropsQuestions.getLocale()) + " ");
-        String lastName = scanner.nextLine().trim();
+        handleInOut.out(messageSource.getMessage("enter.your.last.name", null, appPropsQuestions.getLocale()) + " ");
+        String lastName = handleInOut.in();
 
         return firstName + " " + lastName;
     }
@@ -56,27 +58,26 @@ public class QuestionServiceImpl implements QuestionService {
     }
 
     @Override
-    public void fillAnswerByQuestions(Scanner scanner, List<Question> questionList) {
+    public void fillAnswerByQuestions(List<Question> questionList) {
 
         String questionLocale = messageSource.getMessage("question", null, appPropsQuestions.getLocale());
 
         String entYourAnswerLocale = messageSource.getMessage("enter.your.answer", null, appPropsQuestions.getLocale());
 
         for (Question question : questionList) {
-            System.out.println(questionLocale
+            handleInOut.outAndCr(questionLocale
                     + " "
                     + messageSource.getMessage("how.much", new String[]{question.getQuestion()}, appPropsQuestions.getLocale()));
-            System.out.print  (entYourAnswerLocale + " ");
-            question.setUserAnswer(scanner.nextLine().trim());
+            handleInOut.out     (entYourAnswerLocale + " ");
+
+            question.setUserAnswer(handleInOut.in());
         }
     }
 
     @Override
     public String processQuestionsFromDao() {
 
-        Scanner scanner = new Scanner(System.in);
-
-        String firstLastName = fillFirstLastName(scanner);
+        String firstLastName = fillFirstLastName();
 
         // кол-во правильных ответов для успешного зачета из настройки
         int rightAnswerCountExamPass = 0;
@@ -89,7 +90,7 @@ public class QuestionServiceImpl implements QuestionService {
 
         List<Question> questionList = questionDao.findAllQuestions();
 
-        fillAnswerByQuestions(scanner, questionList);
+        fillAnswerByQuestions(questionList);
 
         // счетчик правильных ответов
         int rightAnswerCount = calcRightAnswerCount(questionList);
@@ -106,4 +107,5 @@ public class QuestionServiceImpl implements QuestionService {
                         appPropsQuestions.getLocale()
                 );
     }
+
 }

@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 public interface QuestionService {
 
-    String fillFirstLastName(Scanner scanner);
+    String fillFirstLastName();
 
     String processQuestionsFromDao();
 
@@ -15,5 +15,6 @@ public interface QuestionService {
 
     int calcRightAnswerCount(List<Question> questionList);
 
-    void fillAnswerByQuestions(Scanner scanner, List<Question> questionList);
+    void fillAnswerByQuestions(List<Question> questionList);
+
 }

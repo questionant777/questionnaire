@@ -7,6 +7,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
 import ru.otus.spring.config.AppPropsQuestions;
 
+import java.io.IOException;
 import java.util.Locale;
 
 import static org.assertj.core.api.Assertions.assertThat;

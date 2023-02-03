@@ -19,7 +19,6 @@ import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Locale;
-import java.util.Scanner;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.when;
@@ -33,6 +32,9 @@ public class QuestionServiceImplTest {
 
     @Autowired
     MessageSource messageSource;
+
+    @Autowired
+    HandleInOut handleInOut;
 
     private QuestionServiceImpl service;
 
@@ -48,7 +50,7 @@ public class QuestionServiceImplTest {
         appPropsQuestions.setRightAnswerCountExamPass("3");
         appPropsQuestions.setLocale(Locale.forLanguageTag("en"));
 
-        service = new QuestionServiceImpl(appPropsQuestions, questionDao, messageSource);
+        service = new QuestionServiceImpl(appPropsQuestions, questionDao, messageSource, handleInOut);
 
         List<Question> allQuestionList = new ArrayList<>();
         allQuestionList.add(new Question("q1", "1", ""));
@@ -63,11 +65,12 @@ public class QuestionServiceImplTest {
 
     @Test
     public void fillFirstLastNameTest() {
+
         inputConsole("Ivan\nIvanov\n");
 
-        Scanner scanner = new Scanner(System.in);
+        handleInOut.resetSystemIn();
 
-        String result = service.fillFirstLastName(scanner);
+        String result = service.fillFirstLastName();
 
         closeConsole();
 
@@ -100,9 +103,9 @@ public class QuestionServiceImplTest {
 
         inputConsole("test1\ntest2\n");
 
-        Scanner scanner = new Scanner(System.in);
+        handleInOut.resetSystemIn();
 
-        service.fillAnswerByQuestions(scanner, questionList);
+        service.fillAnswerByQuestions(questionList);
 
         closeConsole();
 
@@ -115,6 +118,8 @@ public class QuestionServiceImplTest {
 
         inputConsole("Ivan\nIvanov\n1\n2\n3\n4\n5\n");
 
+        handleInOut.resetSystemIn();
+
         String result = service.processQuestionsFromDao();
 
         closeConsole();
@@ -126,6 +131,8 @@ public class QuestionServiceImplTest {
     public void processQuestionsFromDaoNotPassTest() {
 
         inputConsole("Ivan\nIvanov\n1\n1\n1\n1\n5\n");
+
+        handleInOut.resetSystemIn();
 
         String result = service.processQuestionsFromDao();
 
